@@ -21,6 +21,7 @@ import java.util.Set;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
