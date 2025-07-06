@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,13 +90,15 @@ public class GoogleOAuthService {
         user.setAuthProvider(AuthProvider.GOOGLE);
     }
 
-    public String getGoogleAuthUrl() {
-        return "https://accounts.google.com/o/oauth2/v2/auth?" +
-                "client_id=" + clientId +
-                "&redirect_uri=http://localhost:8080/api/auth/google/callback" +
-                "&scope=email profile" +
+    public String getGoogleAuthUrl(String system) {
+        String baseUrl = "https://accounts.google.com/o/oauth2/auth";
+        String params = "?client_id=" + clientId +
+                "&redirect_uri=" + URLEncoder.encode("http://localhost:8080/api/auth/google/callback", StandardCharsets.UTF_8) +
+                "&scope=" + URLEncoder.encode("openid email profile", StandardCharsets.UTF_8) +
                 "&response_type=code" +
-                "&access_type=offline";
+                "&state=" + URLEncoder.encode(system, StandardCharsets.UTF_8);
+
+        return baseUrl + params;
     }
 
     public String exchangeCodeForToken(String code) {
